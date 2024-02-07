@@ -1,18 +1,27 @@
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, FormEvent, useState } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
 
 export function NewNoteCard() {
   const [shouldShowOnboarding, setShouldShowOnboarding] = useState(true)
+  const [content, setContent] = useState("")
 
   function handleStartEditor() {
     setShouldShowOnboarding(false);
   }
 
   function handleContentChange(event: ChangeEvent<HTMLTextAreaElement>) {
+    setContent(event.target.value)
+
     if (event.target.value === "") {
       setShouldShowOnboarding(true)
     }
+  }
+
+  function handleSaveNote(event: FormEvent) {
+    event.preventDefault()
+
+    console.log(content)
   }
 
   return (
@@ -30,25 +39,28 @@ export function NewNoteCard() {
             <X className='size-5' />
           </Dialog.Close>
 
-          <div className='flex flex-1 flex-col gap-3 p-5'>
-            <span className='text-small font-medium text-slate-200'>Adicionar nota</span>
+          <form onSubmit={handleSaveNote} className='flex flex-1 flex-col'>
+            <div className='flex flex-1 flex-col gap-3 p-5'>
+              <span className='text-small font-medium text-slate-200'>Adicionar nota</span>
 
-            {shouldShowOnboarding ? (
-              <p className='text-small leading-6 text-slate-400'>
-                Comece <button className='font-medium text-lime-400 hover:underline'>gravando uma nota</button> em áudio ou se preferir <button className='font-medium text-lime-400 hover:underline' onClick={handleStartEditor}>utilize apenas texto</button>.
-              </p>
-            ) : (
-              <textarea
-                autoFocus
-                className='text-small leading-6 text-slate-400 bg-transparent resize-none flex-1 outline-none'
-                onChange={handleContentChange}
-              />
-            )}
-          </div>
+              {shouldShowOnboarding ? (
+                <p className='text-small leading-6 text-slate-400'>
+                  Comece <button className='font-medium text-lime-400 hover:underline'>gravando uma nota</button> em áudio ou se preferir <button className='font-medium text-lime-400 hover:underline' onClick={handleStartEditor}>utilize apenas texto</button>.
+                </p>
+              ) : (
+                <textarea
+                  autoFocus
+                  className='text-small leading-6 text-slate-400 bg-transparent resize-none flex-1 outline-none'
+                  onChange={handleContentChange}
+                />
+              )}
+            </div>
 
-          <button type="button" className='w-full bg-lime-400 py-4 text-center text-small text-lime-950 outline-none font-medium hover:bg-lime-500'>
-            Salvar nota
-          </button>
+            <button type="submit" className='w-full bg-lime-400 py-4 text-center text-small text-lime-950 outline-none font-medium hover:bg-lime-500'>
+              Salvar nota
+            </button>
+          </form>
+
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
